@@ -123,13 +123,89 @@ Route::get('user/{id}', function ($id) {
 ```
 
 ## Rotas nomeadas
-Você pode dar nomes para as suas rotas, isto é extremamente útil para quando é necessário mudar as urls do site recomento que sempre seja nomeada
+Você pode dar nomes para as suas rotas, isto é extremamente útil para quando é necessário mudar as urls do site, recomento que sempre seja nomeada.
 
 ```
 Route::get('user/profile', function () {
 })->name('profile');
 
 Route::get('user/profile', 'UserController@showProfile')->name('profile');
+```
+O nome da rota pode ser como os exemplos abaixo
+->route('profile');
+->route('profile.show');
+
+**Gerar urls para rotas nomeadas**
+
+
+```php
+//COM PARAMENTROS user/5/profile
+// PARA ESTA ROTA
+Route::get('user/{id}/profile', function ($id) {
+})->name('profile');
+$url = route('profile', ['id' => 1]);
+
+// REDIRECIONAR PARA UMA URL NOMEADA
+return redirect()->route('profile');
+```
+**Gerar urls para as rotas nomeadas**
+```php
+    route('profile');
+    route('profile.show');
+    route('profile', ['id' => 1]);
+```
+**Inspecting The Current Route**
+Em Breve
+
+## Rotas agrupadas
+
+**Rotas com prefixo**
+Você pode criar suas rotas como listado abaixo repetindo o users/ em todas as rotas ou criar um prefixo para agrupar todas as rotas de users evitando assim repetição.
+
+Rotas não agrupadas
+```php
+    Route::get('users/', 'UsersController@index');
+    Route::get('users/show/', 'UsersController@show');
+    Route::post('users/create/', 'UsersController@create');
+    Route::delete('users/destroy/', 'UsersController@destroy');
+```
+Rotas agrupadas
+```php
+Route::group(['prefix' => 'users'], function(){
+    Route::get('/', 'UsersController@index');
+    Route::get('show/', 'UsersController@show');
+    Route::post('create/', 'UsersController@create');
+    Route::delete('destroy/', 'UsersController@destroy');
+});
+```
+
+**Rotas com namespace para o controller**
+Por padrão quando uma rota e chamada **Route::get('users/', 'UsersController@index');** o laravel vai procurar o controller defindo na pasta App\Http\Controllers onde foi defindo o namespace padrão do laravel para os controllers: **App\Http\Controllers**
+
+Então caso você queira adicionar namespaces para seus controllers basta seguir o código abaixo, desta forma você poderá colocar seu controller em uma subpasta em App\Http\Controllers\.
+Por exemplo você quer que todos os seus controlers do admin estejam dentro de uma pasta /admin
+
+Controller Photo
+```php
+<?php
+namespace App\Http\Controllers\Admin;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class PhotoController extends Controller
+{
+    public function index(){
+        echo "Index Photo";
+    }
+}
+```
+Rota para os controllers do namespace admin, neste caso somente para o index do PhotoController
+```php
+<?php
+Route::namespace('admin')->group(function () {
+    Route::get('admin/photo/', 'PhotoController@index');
+});
+
 ```
 
 
