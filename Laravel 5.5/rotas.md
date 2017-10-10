@@ -171,6 +171,13 @@ Rotas não agrupadas
 ```
 Rotas agrupadas
 ```php
+Route::prefix('users')->group( function(){
+    Route::get('/', 'UsersController@index');
+    Route::get('show/', 'UsersController@show');
+    Route::post('create/', 'UsersController@create');
+    Route::delete('destroy/', 'UsersController@destroy');
+});
+// ou
 Route::group(['prefix' => 'users'], function(){
     Route::get('/', 'UsersController@index');
     Route::get('show/', 'UsersController@show');
