@@ -48,8 +48,13 @@ Rota direcionando para um controller
 ```php
 Route::get('/user', 'UsersController@index');
 ```
-### CSRF Protection
-Em breve
+### CSRF - Proteção da rota
+Com o helper abaixo o formulário será enviado com um token de segurança
+```
+<form method="POST" action="/profile">
+    {{ csrf_field() }}
+</form>
+```
 ### Redirecionameto
 ```php
 Route::redirect('/daqui', '/para_ca','redirect_code');
@@ -157,7 +162,7 @@ return redirect()->route('profile');
 **Inspecting The Current Route**
 Em Breve
 
-## Rotas agrupadas
+# Rotas agrupadas
 
 **Rotas com prefixo**
 Você pode criar suas rotas como listado abaixo repetindo o users/ em todas as rotas ou criar um prefixo para agrupar todas as rotas de users evitando assim repetição.
@@ -215,7 +220,60 @@ Route::namespace('admin')->group(function () {
 
 ```
 
+**Subdomínio**
+```php
+Route::domain('{account}.myapp.com')->group(function () {
+    Route::get('user/{id}', function ($account, $id) {
+        //
+    });
+});
+```
+**Middleware**
+Atribui um ou mais middleware para um grupo
+```php
+Route::middleware('first')->group(function () {
+    Route::get('/', 'PhotoController@index');
+    Route::get('user/profile', 'PhotoController@create');
+});
 
+Route::middleware(['first', 'second'])->group(function () {
+    Route::get('/', 'PhotoController@index');
+    Route::get('user/profile', 'PhotoController@create');
+});
+```
+# Route Model Binding
+Em breve
 
+# Form Method Spoofing
+Formulários html não suportam os métodos http, put, patch, e delete. Na verdadde só aceitam post e get, mas as rotas suportam vários métodos
 
+```
+Route::get($uri, $callback);
+Route::post($uri, $callback);
+Route::put($uri, $callback);
+Route::patch($uri, $callback);
+Route::delete($uri, $callback);
+Route::options($uri, $callback);
+```
+
+para enviar um formulário com um método diferente um campo  com o name _method
+```
+<form action="/foo/bar" method="POST">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+</form>
+```
+pode-se usar um helper para isto
+
+```
+{{ method_field('PUT') }}
+```
+# Rota atual
+Acessa as informações da rota atual
+
+```
+$route = Route::current();
+$name = Route::currentRouteName();
+$action = Route::currentRouteAction();
+```
 
